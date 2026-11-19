@@ -1,0 +1,9 @@
+{
+  "name": "GLOBAL MARKET",
+  "short_name": "Global Market",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#F5C518",
+  "description": "Vends partout, gère depuis N'Djamena"
+}

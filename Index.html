@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOBAL MARKET - 9 Pays</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#F5C518">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+body{background:#111;color:#fff}
+header{background:#000;padding:15px;text-align:center;border-bottom:2px solid #F5C518;position:sticky;top:0;z-index:10}
+h1{color:#F5C518;font-size:22px}
+.tag{color:#ccc;font-size:12px}
+.top{display:flex;gap:8px;padding:10px}
+select,input,button{padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;width:100%}
+button{background:#F5C518;color:#000;font-weight:bold;border:none;cursor:pointer}
+.card{background:#1c1c1c;margin:10px;border-radius:14px;padding:12px;border:1px solid #333}
+.prod{display:flex;gap:10px;align-items:center}
+.prod img{width:70px;height:70px;object-fit:cover;border-radius:10px;background:#333}
+.price{color:#F5C518;font-weight:bold;font-size:18px}
+.badge{display:inline-block;background:#F5C518;color:#000;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:bold}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#000;display:flex;border-top:1px solid #333;padding:8px}
+.nav button{background:none;color:#aaa;font-size:12px}
+.nav button.active{color:#F5C518}
+.hidden{display:none}
+.small{font-size:12px;color:#aaa}
+.flex{display:flex;gap:8px}
+</style>
+</head>
+<body>
+<header><h1>🌍 GLOBAL MARKET</h1><div class="tag">Vends partout, gère depuis N'Djamena • 9 Pays</div></header>
+
+<div id="page-accueil">
+<div class="card">
+<h3>👋 Bienvenue</h3><p class="small">Choisis ton pays, les prix changent automatiquement.</p><br>
+<label>🌍 Ton Pays :</label>
+<select id="pays" onchange="changerPays()">
+<option value="Tchad">🇹🇩 Tchad - FCFA</option>
+<option value="Cameroun">🇨🇲 Cameroun - FCFA</option>
+<option value="Nigeria">🇳🇬 Nigeria - Naira ₦</option>
+<option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire - FCFA</option>
+<option value="Congo-B">🇨🇬 Congo-Brazzaville - FCFA</option>
+<option value="Congo-K">🇨🇩 Congo-Kinshasa - CDF</option>
+<option value="Togo">🇹🇬 Togo - FCFA</option>
+<option value="Niger">🇳🇪 Niger - FCFA</option>
+<option value="Rwanda">🇷🇼 Rwanda - RWF</option>
+</select>
+<br><br>
+<div class="flex"><button onclick="show('boutique')">🛒 Voir Boutique</button><button onclick="show('equipe')" style="background:#fff">👥 Équipe</button></div>
+</div>
+<div id="liste-produits"></div>
+</div>
+
+<div id="page-boutique" class="hidden">
+<div class="card"><h3>🛒 Boutique - <span id="pays-titre">Tchad</span></h3><p class="small">Prix en <span id="devise-titre">FCFA</span></p></div>
+<div id="liste-boutique"></div>
+</div>
+
+<div id="page-equipe" class="hidden">
+<div class="card"><h3>👥 Connexion Équipe</h3><p class="small">Seul le Super Admin crée les comptes. Chaque membre se connecte avec son nom défini par le Fondateur.</p><br>
+<input id="login" placeholder="Identifiant ex: moussa.gm">
+<input id="pass" type="password" placeholder="Mot de passe" style="margin-top:8px">
+<input id="pin" placeholder="Code PIN (4 chiffres)" style="margin-top:8px">
+<select id="pays-login" style="margin-top:8px"><option>Tchad</option><option>Cameroun</option><option>Nigeria</option><option>Côte d'Ivoire</option><option>Congo-B</option><option>Congo-K</option><option>Togo</option><option>Niger</option><option>Rwanda</option></select>
+<button onclick="seConnecter()" style="margin-top:10px">Se Connecter</button>
+<div id="resultat-login" class="small" style="margin-top:10px"></div>
+</div>
+<div class="card"><h3>➕ Créer un membre (Super Admin seulement)</h3><p class="small">Toi seul peux créer. Ex: Moussa Adoum, Admin, Tchad, 1234</p><br>
+<input id="new-nom" placeholder="Nom complet ex: Moussa Adoum">
+<select id="new-role" style="margin-top:8px"><option>Admin</option><option>Stratège</option><option>Marketing</option><option>Livreur</option></select>
+<select id="new-pays" style="margin-top:8px"><option>Tchad</option><option>Cameroun</option><option>Nigeria</option><option>Côte d'Ivoire</option><option>Congo-B</option><option>Congo-K</option><option>Togo</option><option>Niger</option><option>Rwanda</option></select>
+<input id="new-pin" placeholder="PIN ex: 1234" style="margin-top:8px">
+<button onclick="creerMembre()" style="margin-top:10px">Créer Membre</button>
+<div id="resultat-creer" class="small" style="margin-top:10px"></div>
+</div>
+<div class="card"><h3>📋 Équipe actuelle</h3><div id="liste-equipe"></div></div>
+</div>
+
+<div id="page-commandes" class="hidden">
+<div class="card"><h3>📦 Commandes</h3><div id="liste-commandes">Commande #1024 - Ibrahim S. - 12 300 FCFA - En cours<br>Commande #1023 - Cameroun - 8 200 ₦ - Livrée<br>Commande #1022 - Rwanda - 2 800 RWF - Préparation</div><br><button onclick="alert('Fonction Livreur: Seul le Livreur voit le bouton Livré')">✅ Marquer Livré (Livreur seulement)</button></div>
+</div>
+
+<div style="height:70px"></div>
+<div class="nav">
+<button id="btn-accueil" class="active" onclick="show('accueil')">🏠<br>Accueil</button>
+<button id="btn-boutique" onclick="show('boutique')">🛒<br>Boutique</button>
+<button id="btn-equipe" onclick="show('equipe')">👥<br>Équipe</button>
+<button id="btn-commandes" onclick="show('commandes')">📦<br>Commandes</button>
+</div>
+
+<script>
+let taux={Tchad:{devise:'FCFA',sym:'FCFA',mult:1},Cameroun:{devise:'FCFA',sym:'FCFA',mult:1},"Côte d'Ivoire":{devise:'FCFA',sym:'FCFA',mult:1},"Congo-B":{devise:'FCFA',sym:'FCFA',mult:1},Togo:{devise:'FCFA',sym:'FCFA',mult:1},Niger:{devise:'FCFA',sym:'FCFA',mult:1},Nigeria:{devise:'Naira',sym:'₦',mult:2.7},"Congo-K":{devise:'CDF',sym:'CDF',mult:4.7},Rwanda:{devise:'RWF',sym:'RWF',mult:2.2}};
+let produits=[{nom:'Riz 5kg',cat:'Alimentaire',prix:3500,img:'🍚'},{nom:'Huile 1L',cat:'Cuisine',prix:1200,img:'🫒'},{nom:'Smartphone XYZ',cat:'Électronique',prix:45000,img:'📱'},{nom:'Café 500g',cat:'Boissons',prix:2800,img:'☕'},{nom:'Sac 25kg Farine',cat:'Alimentaire',prix:15000,img:'🌾'}];
+let equipe=[
+{nom:'Djedanem Prospere',login:'prospere.gm',pass:'Super2026',pin:'0000',role:'Super Admin',pays:'Tchad',actif:true},
+{nom:'abbas baloum',login:'abbas.gm',pass:'abbas2026',pin:'2003',role:'Admin',pays:'côte d'ivoire,actif:true},
+{nom:'raissa',login:'raissa.gm',pass:'raissa2026',pin:'5678',role:'Stratège',pays:'togo',actif:true},
+{nom:'Abakar',login:'abakar.gm',pass:'abakar2026',pin:'9012',role:'Marketing',pays:"Nigeria",actif:true},
+{nom:'Ibrahim S',login:'ibrahim.gm',pass:'Ibrahim2026',pin:'3456',role:'Livreur',pays:'Congo-B',actif:true}
+];
+function getPays(){return document.getElementById('pays').value}
+function changerPays(){afficherProduits()}
+function afficherProduits(){
+let p=getPays(); let t=taux[p];
+document.getElementById('pays-titre').innerText=p;
+document.getElementById('devise-titre').innerText=t.devise;
+let html='';
+produits.forEach(pr=>{
+let prix=Math.round(pr.prix*t.mult);
+html+=`<div class="card"><div class="prod"><div style="font-size:40px">${pr.img}</div><div style="flex:1"><b>${pr.nom}</b><br><span class="small">${pr.cat} • ${p}</span><br><span class="price">${prix.toLocaleString()} ${t.sym}</span></div><button style="width:auto;padding:10px 14px" onclick="alert('Ajouté au panier: ${pr.nom} - ${prix} ${t.sym}')">+ Ajouter</button></div></div>`;
+});
+document.getElementById('liste-produits').innerHTML=html;
+document.getElementById('liste-boutique').innerHTML=html;
+}
+function show(page){
+['accueil','boutique','equipe','commandes'].forEach(p=>{
+document.getElementById('page-'+p).classList.add('hidden');
+document.getElementById('btn-'+p).classList.remove('active');
+});
+document.getElementById('page-'+page).classList.remove('hidden');
+document.getElementById('btn-'+page).classList.add('active');
+afficherEquipe();
+}
+function afficherEquipe(){
+let h=''; equipe.forEach(m=>{
+h+=`<div style="padding:8px;border-bottom:1px solid #333">👤 <b>${m.nom}</b> - ${m.role} - ${m.pays} - Login: ${m.login} - ${m.actif?'✅ Actif':'❌ Bloqué'}</div>`;
+});
+document.getElementById('liste-equipe').innerHTML=h;
+}
+function creerMembre(){
+let nom=document.getElementById('new-nom').value;
+let role=document.getElementById('new-role').value;
+let pays=document.getElementById('new-pays').value;
+let pin=document.getElementById('new-pin').value;
+if(!nom||!pin){alert('Remplis Nom et PIN');return;}
+let login=nom.toLowerCase().split(' ')[0]+'.gm';
+let pass=nom.split(' ')[0]+'2026';
+equipe.push({nom:nom,login:login,pass:pass,pin:pin,role:role,pays:pays,actif:true});
+document.getElementById('resultat-creer').innerHTML=`✅ <b>Membre créé !</b><br>Nom: ${nom}<br>Login: ${login}<br>Mot de passe: ${pass}<br>PIN: ${pin}<br>Rôle: ${role}<br>Pays: ${pays}<br>Envoie-lui ça sur WhatsApp.`;
+afficherEquipe();
+}
+function seConnecter(){
+let l=document.getElementById('login').value;
+let p=document.getElementById('pass').value;
+let pin=document.getElementById('pin').value;
+let pays=document.getElementById('pays-login').value;
+let m=equipe.find(x=>x.login===l && x.pass===p && x.pin===pin && x.pays===pays && x.actif);
+if(m){
+let acces='';
+if(m.role==='Super Admin') acces='Accès TOTAL à tout';
+if(m.role==='Admin') acces='Tu peux gérer produits et membres';
+if(m.role==='Stratège') acces='Tu vois les stats seulement, tu ne peux rien modifier';
+if(m.role==='Marketing') acces='Tu peux ajouter photos et promos';
+if(m.role==='Livreur') acces='Tu vois seulement adresse + bouton Livré';
+document.getElementById('resultat-login').innerHTML=`✅ Bienvenue <b>${m.nom}</b><br>Rôle: ${m.role}<br>Pays: ${m.pays}<br>${acces}`;
+}else{document.getElementById('resultat-login').innerHTML='❌ Accès refusé - Vérifie login, mot de passe, PIN et pays';}
+}
+afficherProduits(); afficherEquipe();
+</script>
+</body>
+</html>
